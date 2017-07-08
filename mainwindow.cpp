@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(console);
 //! [1]
     serial = new QSerialPort(this);
+    serial1 = new QSerialPort(this);
 //! [1]
     settings = new SettingsDialog;
 
@@ -72,6 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 //! [2]
     connect(serial, SIGNAL(readyRead()), this, SLOT(readData()));
+    connect(serial1, SIGNAL(readyRead()), this, SLOT(readData1()));
 //! [2]
     connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
 //! [3]
@@ -83,6 +85,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    closeSerialPort();
+
     delete settings;
     delete ui;
 }
@@ -99,12 +103,20 @@ void MainWindow::openSerialPort()
     //serial->setStopBits(p.stopBits);
     //serial->setFlowControl(p.flowControl);
 
-    serial->setPortName("/dev/ttyUSB1");
+    serial->setPortName("/dev/ttyUSB0");
     serial->setBaudRate(QSerialPort::Baud19200);
     serial->setDataBits(QSerialPort::Data8);
     serial->setParity(QSerialPort::NoParity);
     serial->setStopBits(QSerialPort::OneStop);
     serial->setFlowControl(QSerialPort::NoFlowControl);
+
+    serial1->setPortName("/dev/ttyUSB1");
+    serial1->setBaudRate(QSerialPort::Baud19200);
+    serial1->setDataBits(QSerialPort::Data8);
+    serial1->setParity(QSerialPort::NoParity);
+    serial1->setStopBits(QSerialPort::OneStop);
+    serial1->setFlowControl(QSerialPort::NoFlowControl);
+
 
     if (serial->open(QIODevice::ReadWrite)) {
         console->setEnabled(true);
@@ -115,6 +127,10 @@ void MainWindow::openSerialPort()
         showStatusMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
                           .arg(p.name).arg(p.stringBaudRate).arg(p.stringDataBits)
                           .arg(p.stringParity).arg(p.stringStopBits).arg(p.stringFlowControl));
+
+        serial1->open(QIODevice::ReadWrite);
+
+
     } else {
         QMessageBox::critical(this, tr("Error"), serial->errorString());
 
@@ -129,6 +145,8 @@ void MainWindow::closeSerialPort()
 {
     if (serial->isOpen())
         serial->close();
+    if (serial1->isOpen())
+        serial1->close();
     console->setEnabled(false);
     ui->actionConnect->setEnabled(true);
     ui->actionDisconnect->setEnabled(false);
@@ -158,6 +176,12 @@ void MainWindow::readData()
     QByteArray data = serial->readAll();
 //    console->putData(data);
     kenwooddvr->putData(0,data, console);
+}
+void MainWindow::readData1()
+{
+    QByteArray data = serial1->readAll();
+//    console->putData(data);
+    kenwooddvr->putData(1,data, console);
 }
 //! [7]
 

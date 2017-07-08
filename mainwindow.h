@@ -69,6 +69,7 @@ private slots:
     void about();
     void writeData(const QByteArray &data);
     void readData();
+    void readData1();
 
     void handleError(QSerialPort::SerialPortError error);
 
@@ -83,6 +84,7 @@ private:
     Console *console;
     SettingsDialog *settings;
     QSerialPort *serial;
+    QSerialPort *serial1;
     KenwoodDvr *kenwooddvr;
 };
 
