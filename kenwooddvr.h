@@ -3,8 +3,10 @@
 
 #include <QObject>
 #include <console.h>
+#include <dvrprotocol.h>
 
 class Console;
+class DvrProtocol;
 
 class KenwoodDvr : public QObject
 {
@@ -16,6 +18,8 @@ public:
 signals:
 
 public slots:
+
+private:
 
 };
 

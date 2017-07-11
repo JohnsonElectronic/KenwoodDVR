@@ -1,13 +1,20 @@
 #include "kenwooddvr.h"
+#include <QtDebug>
+#include <QMessageBox>
+#include <QFile>
+#include "dvrprotocol.h"
 
 //Serial Buffer0
 QByteArray buffer[2];
 int ptr[2];
+DvrProtocol *dvrprotocol;
 
 KenwoodDvr::KenwoodDvr(QObject *parent) : QObject(parent)
 {
     ptr[0]=0;
     ptr[1]=0;
+
+    dvrprotocol = new DvrProtocol();
 }
 
 void SerialBuffer(int port, const QByteArray &data, Console *console){
@@ -41,10 +48,22 @@ void SerialBuffer(int port, const QByteArray &data, Console *console){
         if ((buffer[port][buffer[port][1]-1]&0x000000ff) == 0xAA){
 //            console->putText("Frame end, corrent.\r\n");
 
-            if ((buffer[port][0]&0x000000ff) == 0xc0)
-                console->putText("[R]" + QString(buffer[port].mid(0,ptr[port]).toHex().data()) + "\r\n");
-            if ((buffer[port][0]&0x000000ff) == 0x0c)
-                console->putText("[T]" + QString(buffer[port].mid(0,ptr[port]).toHex().data()) + "\r\n");
+            if ((buffer[port][0]&0x000000ff) == 0xc0){
+                qDebug() << "[R]" + QString(buffer[port].mid(0,ptr[port]).toHex().data()) ;
+/*
+                if  ((buffer[port][2]&0x000000ff) != 0x03)
+                    console->putText("[R]" + QString(buffer[port].mid(0,ptr[port]).toHex().data()) + "\r\n");
+*/
+            }
+            if ((buffer[port][0]&0x000000ff) == 0x0c){
+                qDebug() << "[T]" + QString(buffer[port].mid(0,ptr[port]).toHex().data()) ;
+/*
+                if  ((buffer[port][2]&0x000000ff) != 0x03)
+                    console->putText("[T]" + QString(buffer[port].mid(0,ptr[port]).toHex().data()) + "\r\n");
+*/
+            }
+
+            dvrprotocol->analysetData(buffer[port].mid(0,ptr[port]), console);
 
             ptr[port] = 0;
         }
@@ -72,7 +91,7 @@ QString ByteArrayToHexStr(QByteArray data)
            temp+=hex.mid(i,2)+".";
         }
     }
-    return temp.trimmed().toLower();
+    return temp.trimmed().toUpper();
 }
 
 
