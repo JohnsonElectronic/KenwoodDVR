@@ -3,12 +3,23 @@
 
 #include <QObject>
 #include <console.h>
+#include <kenwooddvr.h>
 
-class DvrProtocol
+class DvrProtocol : public QObject
 {
+    Q_OBJECT
+
 public:
-    DvrProtocol();
+    explicit DvrProtocol(QWidget *parent = 0);
+    virtual ~DvrProtocol(){};
     void analysetData(const QByteArray &data, Console *console);
+
+public slots:
+    void TestHeartBeatFrame();
+
+private:
+void SendToDVR(QByteArray &data);
+
 
 };
 

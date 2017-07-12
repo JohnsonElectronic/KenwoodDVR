@@ -5,15 +5,18 @@
 #include <console.h>
 #include <dvrprotocol.h>
 
+
 class Console;
 class DvrProtocol;
 
-class KenwoodDvr : public QObject
+class KenwoodDvr
 {
-    Q_OBJECT
+
+
 public:
-    explicit KenwoodDvr(QObject *parent = 0);
+    KenwoodDvr(QWidget *parent = 0);
     void putData(int port, const QByteArray &data, Console *console);
+    void sendData(QByteArray &data);
 
 signals:
 

@@ -63,18 +63,24 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+        void writeData(const QByteArray &data);
+
+
 private slots:
     void openSerialPort();
     void closeSerialPort();
     void about();
-    void writeData(const QByteArray &data);
+
     void readData();
     void readData1();
+
 
     void handleError(QSerialPort::SerialPortError error);
 
 private:
     void initActionsConnections();
+
 
 private:
     void showStatusMessage(const QString &message);

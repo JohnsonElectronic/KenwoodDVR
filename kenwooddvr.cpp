@@ -3,18 +3,21 @@
 #include <QMessageBox>
 #include <QFile>
 #include "dvrprotocol.h"
+#include <mainwindow.h>
 
 //Serial Buffer0
 QByteArray buffer[2];
 int ptr[2];
 DvrProtocol *dvrprotocol;
+MainWindow *mainwindow;
 
-KenwoodDvr::KenwoodDvr(QObject *parent) : QObject(parent)
+KenwoodDvr::KenwoodDvr(QWidget *parent)
 {
     ptr[0]=0;
     ptr[1]=0;
 
     dvrprotocol = new DvrProtocol();
+    mainwindow = (MainWindow*) parent;
 }
 
 void SerialBuffer(int port, const QByteArray &data, Console *console){
@@ -101,3 +104,9 @@ void KenwoodDvr::putData(int port, const QByteArray &data, Console *console){
 
     SerialBuffer(port, data, console);
 }
+
+void KenwoodDvr::sendData(QByteArray &data){
+    mainwindow->writeData(data);
+}
+
+

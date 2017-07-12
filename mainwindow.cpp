@@ -58,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent) :
 //! [1]
     settings = new SettingsDialog;
 
+    kenwooddvr = new KenwoodDvr(this);
+
     ui->actionConnect->setEnabled(true);
     ui->actionDisconnect->setEnabled(false);
     ui->actionQuit->setEnabled(true);
