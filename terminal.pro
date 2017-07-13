@@ -24,3 +24,6 @@ FORMS += \
 
 RESOURCES += \
     terminal.qrc
+
+DISTFILES += \
+    dvr.log
